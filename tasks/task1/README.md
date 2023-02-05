@@ -1,7 +1,7 @@
 # Задача 1. Тайное становится явным
 ## Формулировка
 Вы используете библиотеку `SomeLibrary` в которой есть следующий класс:
-```
+```c++
 namespace SomeLibrary {
   class ValueHolder {
   public:
