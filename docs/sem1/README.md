@@ -238,6 +238,6 @@ std::terminate_handler get_terminate() noexcept;
 
 ## Полезные ссылки
 * [Обработка исключений](https://academy.yandex.ru/handbook/cpp/article/exceptions)
-* [Иерархия исключений] (https://en.cppreference.com/w/cpp/error/exception)
+* [Иерархия исключений](https://en.cppreference.com/w/cpp/error/exception)
 * [Где хранятся исключения?](https://stackoverflow.com/questions/6611880/when-i-throw-something-where-is-it-stored-in-memory)
 * [Спецификация исключений](https://en.cppreference.com/w/cpp/language/noexcept_spec)
