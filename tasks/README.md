@@ -20,5 +20,5 @@ ctest --verbose
 ```
 
 ## Задачи
-[Задача 1. Тайное становится явным.](https://github.com/alexa0o/cpp-mipt-course/blob/master/tasks/task1)
+[Задача 1. Тайное становится явным.](https://github.com/alexa0o/cpp-mipt-course/blob/master/tasks/task1)  
 [Задача 1. TransformIf safe and in-place.](https://github.com/alexa0o/cpp-mipt-course/blob/master/tasks/task2)
