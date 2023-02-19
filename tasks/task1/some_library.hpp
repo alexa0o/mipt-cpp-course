@@ -7,6 +7,9 @@ namespace SomeLibrary {
         ValueHolder(const std::string_view name, int value)
           : name_(name), value_(value)
         { }
+
+        ValueHolder(ValueHolder&) = delete;
+        ValueHolder& operator=(ValueHolder&) = delete;
   
         std::string GetName() const {
             return name_;
