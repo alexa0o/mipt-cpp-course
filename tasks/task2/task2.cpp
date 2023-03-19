@@ -127,7 +127,7 @@ public:
     }
 
     static void UpdateCounter() {
-        if (++counter_ == max_count_) {
+        if (++counter_ >= max_count_) {
             throw std::logic_error("Fail");
         }
     }
