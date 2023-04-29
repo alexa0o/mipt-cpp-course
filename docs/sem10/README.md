@@ -149,3 +149,83 @@ decltype(f4); // int&
 ++f1; // это уже не сработает
 ```
 
+## CTAD
+Начиная с С++17 компилятор умеет выводить типы не только шаблонных функций, но и классов:
+```c++
+std::pair pr(false, 45.67);      // std::pair<bool, double>
+std::tuple tup(123, 'a', 40.0);  // std::tuple<int, char, double>
+std::less l;                     // std::less<void>, больше не надо писать std::less<> l
+
+template <typename T> struct A { A(T,T); };
+auto y = new A{1, 2};                // выводится A<int>
+
+auto lck = std::lock_guard(mtx);     // std::lock_guard<std::mutex>
+std::copy_n(vi1, 3, std::back_insert_iterator(vi2)); // не надо явно указывать тип итератора
+```
+
+Есть ряд ограничений:  
+1. Не работает с алиасами шаблонов
+```c++
+template <typename X>
+using PairIntX = std::pair<int, X>;
+
+PairIntX p{1, true}; // не компилируется
+```
+
+2. Не может выводить аргументы частично (для функций можем):
+```c++
+std::pair p{1, 5};              // OK
+std::pair<double> q{1, 5};      // ошибка, так нельзя
+std::pair<double, int> r{1, 5}; // OK
+```
+
+3. Не выводит тип, который явно не связан с параметрами шаблона, например, конструктор контейнера от двух итераторов:  
+```c++
+template <typename T>
+struct MyVector {
+  template <typename It>
+  MyVector(It from, It to);
+};
+
+std::vector<double> dv = {1.0, 3.0, 5.0, 7.0};
+MyVector v2{dv.begin(), dv.end()}; // не могу вывести тип T из типа It
+```
+
+Однако, можно явно указать каким образом нужно выводить тип:
+```c++
+template <typename It>
+MyVector(It, It) -> MyVector<typename std::iterator_traits<It>::value_type>;
+```
+
+Формально синтаксис следующий:
+```c++
+[explicit] template-name (parameter-declaration-clause) -> simple-template-id;
+```
+
+Ключевое слово explicit запрещает copy-list-initialization:
+```c++
+template <typename It>
+explicit MyVector(It, It) -> MyVector<typename std::iterator_traits<It>::value_type>;
+
+std::vector<double> dv = {1.0, 3.0, 5.0, 7.0};
+MyVector v2{dv.begin(), dv.end()};    // ОК
+MyVector v3 = {dv.begin(), dv.end()}; // ошибка компиляции
+```
+
+Кстати, не обязательно быть шаблоном:
+```c++
+template<class T> struct S { S(T); };
+S(char const*) -> S<std::string>;
+S s{"hello"}; // S<std::string>
+```
+
+Еще примеры:
+```c++
+std::vector v1{8, 15}; // [8, 15]
+std::vector v2(8, 15); // [15, 15, … 15] (8 раз)
+std::vector v3{8};     // [8]
+std::vector v4(8);     // не компилируется
+
+std::vector v5{"hi", "world"}; // [“hi”, “world”]
+std::vector v6("hi", "world"); // ??
+```
